@@ -10,6 +10,7 @@ $data = json_decode($file);
 $metroData = $data->lineData->ubahn;
 $bimData = $data->lineData->bim;
 $busData = $data->lineData->postBus;
+$nightlineData = $data->lineData->nightline;
 
 $fileDate = $data->timeStamp;
 $fileDateF = strtotime($fileDate);
@@ -72,6 +73,14 @@ if (strtotime($fileDateF) > strtotime('+30 day')) {
                     <?php 
                         foreach($bimData AS $bimKey => $bimVal) {
                             echo '<li>' . $bimKey . '</li>';
+                        }
+                    ?>
+                </ul>
+                <a class='dropdown-trigger btn indigo darken-2' href='#' data-target='dropdownNightline'><i class="material-icons right">directions_bus</i>Nightlines</a>
+                <ul id='dropdownNightline' class='dropdown-content'>
+                    <?php 
+                        foreach($nightlineData AS $nightKey => $nightVal) {
+                            echo '<li>' . $nightKey . '</li>';
                         }
                     ?>
                 </ul>

@@ -316,6 +316,86 @@ $(document).ready(function (){
             }
         });
     });
+    $('#dropdownNightline li').on('click', function() {
+        var target = $(this).html();
+        
+        $.ajax({
+            url: rootLink + 'json/nightline.json',
+            datatype:'json',
+            success: function(reponse){
+                var nightDaten = reponse.lineData[0];
+                for (var key in nightDaten) {
+                    if (key == target) {
+                        createButton(nightDaten[target].stationen, target); 
+                        buttonShowAll(target);    
+
+                        $('#allButton').on('click', function () {
+                            $.ajax({
+                                url: rootLink + 'lib/EchtzeitDatenAPI.php',
+                                method: 'GET',
+                                data: {getLiveData: 'getAll', type: 'nightline'},
+                                success: function (response) {
+                                    
+                                    var line = response.lineData[0];
+                                    var coord = [];
+                                    for (let tar in line) {
+                        
+                                        if (tar == target) {
+                        
+                                            var stations = line[target].stationen;
+                                            for (let s = 0; s < stations.length; s++) {
+                        
+                                                myMap.setView([stations[0][1][0],stations[0][1][1]], 12);
+                                                var allMarker = L.marker([stations[s][1][0],stations[s][1][1]], {icon: createIcon('icons/sharp-bus.svg')}).addTo(myMap);
+                                                var stName = stations[s][0];
+                                                allMarker.bindPopup(stName);
+                                                var lonlat = new L.LatLng(stations[s][1][0], stations[s][1][1]);
+                                                coord.push(lonlat);
+                                            }
+                                            var polyline = new L.Polyline(coord, {
+                                                color: 'red',
+                                                weight: 5,
+                                                opacity: 0.5,
+                                                smoothFactor:1
+                                            });
+                                            polyline.addTo(myMap);
+                                        }
+                                    }
+                                },
+                                error: function () {
+                                    console.log('nooo');
+                                }
+                            });
+                        });
+
+                        $('#stationen li').on('click', function() {
+                            var numb = $(this).attr('id');
+                            var rblBus = nightDaten[target].stationen[numb][1][2];
+                            console.log(rblBus);
+                            myMap.setView([nightDaten[target].stationen[numb][1][0], nightDaten[target].stationen[numb][1][1]], 14);
+                            var nightMarker = L.marker([nightDaten[target].stationen[numb][1][0], nightDaten[target].stationen[numb][1][1]],{icon: createIcon('icons/sharp-bus.svg')}).addTo(myMap);
+                            $.ajax({
+                                url: rootLink + 'lib/EchtzeitDatenAPI.php',
+                                method: 'GET',
+                                data: {getLiveData:'rbl', rblNumber: rblBus },
+                                success: function(liveData) {
+                                    var parsed = JSON.parse(liveData);
+                                    console.log(parsed);
+                                    var bContent = nightDaten[target].stationen[numb][0] + '<br>Linie ' + parsed.response[0] + '<br>Endstation ' + parsed.response[2]+ '<br>Nächster Bus in ' + parsed.response[1] + ' Minuten';
+                                    
+                                    nightMarker.bindPopup(bContent).openPopup();
+                                    
+                                },
+                                error: function (){
+                                    alert('nooo');
+                                }
+                            });
+                        }); 
+                    }
+                };
+            }
+        });
+    });
 
 
 
