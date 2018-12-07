@@ -37,11 +37,13 @@ function buttonShowAll (target) {
     $('<a>')
         .addClass('waves-effect waves-light btn indigo darken-2')
         .appendTo('#balken2:last-child')
-        .html('Zeige ' + target + ' Strecke');
+        .html('Zeige ' + target + ' Strecke')
+        .attr('id', 'allButton');
     $('<i>')
         .addClass('material-icons left')
         .appendTo('#balken2 a:last-child')
         .html('show_chart');
+
 };
 
 $(document).ready(function (){
@@ -63,12 +65,55 @@ $(document).ready(function (){
             url: rootLink + 'json/ubahn.json',
             datatype:'json',
             success: function(reponse){
+
                 var ubahndaten = reponse.lineData[0];
                 for (var key in ubahndaten) {
+
                     if (key == target) {
+
                         $('<h2>').html(target).appendTo('#balken2');
                         createButton(ubahndaten[target].stationen, target); 
-                        buttonShowAll(target);
+                        buttonShowAll(target);    
+
+                        $('#allButton').on('click', function () {
+                            $.ajax({
+                                url: rootLink + 'lib/EchtzeitDatenAPI.php',
+                                method: 'GET',
+                                data: {getLiveData: 'getAll', type: 'ubahn'},
+                                success: function (response) {
+                                    
+                                    var line = response.lineData[0];
+                                    var coord = [];
+                                    for (let tar in line) {
+                        
+                                        if (tar == target) {
+                        
+                                            var stations = line[target].stationen;
+                                            for (let s = 0; s < stations.length; s++) {
+                        
+                                                myMap.setView([stations[0][1][0],stations[0][1][1]], 12);
+                                                var allMarker = L.marker([stations[s][1][0],stations[s][1][1]]).addTo(myMap);
+                                                var stName = stations[s][0];
+                                                allMarker.bindPopup(stName);
+                                                var lonlat = new L.LatLng(stations[s][1][0], stations[s][1][1]);
+                                                coord.push(lonlat);
+                                            }
+                                            var polyline = new L.Polyline(coord, {
+                                                color: 'red',
+                                                weight: 5,
+                                                opacity: 0.5,
+                                                smoothFactor:1
+                                            });
+                                            polyline.addTo(myMap);
+                                        }
+                                    }
+                                },
+                                error: function () {
+                                    console.log('nooo');
+                                }
+                            });
+                        });
+
                         $('#stationen li').on('click', function() {
 
                             var numb = $(this).attr('id');
@@ -109,6 +154,46 @@ $(document).ready(function (){
                 for (var key in bimDaten) {
                     if (key == target) {
                         createButton(bimDaten[target].stationen, target); 
+                        buttonShowAll(target);    
+
+                        $('#allButton').on('click', function () {
+                            $.ajax({
+                                url: rootLink + 'lib/EchtzeitDatenAPI.php',
+                                method: 'GET',
+                                data: {getLiveData: 'getAll', type: 'tram'},
+                                success: function (response) {
+                                    
+                                    var line = response.lineData[0];
+                                    var coord = [];
+                                    for (let tar in line) {
+                        
+                                        if (tar == target) {
+                        
+                                            var stations = line[target].stationen;
+                                            for (let s = 0; s < stations.length; s++) {
+                        
+                                                myMap.setView([stations[0][1][0],stations[0][1][1]], 12);
+                                                var allMarker = L.marker([stations[s][1][0],stations[s][1][1]]).addTo(myMap);
+                                                var stName = stations[s][0];
+                                                allMarker.bindPopup(stName);
+                                                var lonlat = new L.LatLng(stations[s][1][0], stations[s][1][1]);
+                                                coord.push(lonlat);
+                                            }
+                                            var polyline = new L.Polyline(coord, {
+                                                color: 'red',
+                                                weight: 5,
+                                                opacity: 0.5,
+                                                smoothFactor:1
+                                            });
+                                            polyline.addTo(myMap);
+                                        }
+                                    }
+                                },
+                                error: function () {
+                                    console.log('nooo');
+                                }
+                            });
+                        });
                         $('#stationen li').on('click', function() {
 
                             var numb = $(this).attr('id');
@@ -150,6 +235,47 @@ $(document).ready(function (){
                 for (var key in busDaten) {
                     if (key == target) {
                         createButton(busDaten[target].stationen, target); 
+                        buttonShowAll(target);    
+
+                        $('#allButton').on('click', function () {
+                            $.ajax({
+                                url: rootLink + 'lib/EchtzeitDatenAPI.php',
+                                method: 'GET',
+                                data: {getLiveData: 'getAll', type: 'bus'},
+                                success: function (response) {
+                                    
+                                    var line = response.lineData[0];
+                                    var coord = [];
+                                    for (let tar in line) {
+                        
+                                        if (tar == target) {
+                        
+                                            var stations = line[target].stationen;
+                                            for (let s = 0; s < stations.length; s++) {
+                        
+                                                myMap.setView([stations[0][1][0],stations[0][1][1]], 12);
+                                                var allMarker = L.marker([stations[s][1][0],stations[s][1][1]]).addTo(myMap);
+                                                var stName = stations[s][0];
+                                                allMarker.bindPopup(stName);
+                                                var lonlat = new L.LatLng(stations[s][1][0], stations[s][1][1]);
+                                                coord.push(lonlat);
+                                            }
+                                            var polyline = new L.Polyline(coord, {
+                                                color: 'red',
+                                                weight: 5,
+                                                opacity: 0.5,
+                                                smoothFactor:1
+                                            });
+                                            polyline.addTo(myMap);
+                                        }
+                                    }
+                                },
+                                error: function () {
+                                    console.log('nooo');
+                                }
+                            });
+                        });
+
                         $('#stationen li').on('click', function() {
                             var numb = $(this).attr('id');
                             var rblBus = busDaten[target].stationen[numb][1][2];
@@ -178,6 +304,9 @@ $(document).ready(function (){
             }
         });
     });
+
+
+
 
 });
 

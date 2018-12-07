@@ -44,6 +44,16 @@ function getCardString($val) {
     return $finalize;
 
 }
+
+function getAllCoords($val) {
+    $rawJson = file_get_contents('../json/' . $val . '.json', 'r');
+    $json = json_decode($rawJson);
+
+    // TODO:
+    // Validierungsfunktion die auf aktualität prüft
+    return $json;
+}
+
 //var_dump(getCardString('1678'));
 if (array_key_exists('getLiveData', $_GET))
 switch ($_GET['getLiveData']) {
@@ -51,5 +61,12 @@ switch ($_GET['getLiveData']) {
         $rblNumber = $_GET['rblNumber'];
         $finString = getCardString($rblNumber);
         echo json_encode($finString);
+    break;
+    
+    case 'getAll':
+        $response = $_GET['type'];
+        $coords = getAllCoords($response);
 
+        echo json_encode($coords);
+    break;
 }

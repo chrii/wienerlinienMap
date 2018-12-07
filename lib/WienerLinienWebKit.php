@@ -64,7 +64,7 @@ class WienerLinienWebKit {
             }
             // Nach Prüfung ob der Key vorhanden ist, füge diesem Key die Linie als Key hinzu
             // Dieser Key hat ein weiteres Array
-            $stationsByLine[$linienTyp][$linienName] = ['stationen' => [], 'lonlatrbl' => []];
+            $stationsByLine[$linienTyp][$linienName] = ['stationen' => []];
 
             // Prüft bei jedem Liniendaten Durchlauf ob in den Steigdaten die Halstestellen ID zu finden ist
             foreach ($this->stg AS $steigDaten) {
