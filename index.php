@@ -67,7 +67,7 @@ if (strtotime($fileDateF) > strtotime('+30 day')) {
                         }
                     ?>
                 </ul>
-                <a class='dropdown-trigger btn indigo darken-2' href='#' data-target='dropdownBim'><i class="material-icons right">directions_railway</i>Straßebahnen</a>
+                <a class='dropdown-trigger btn indigo darken-2' href='#' data-target='dropdownBim'><i class="material-icons right">directions_railway</i>Straßenbahnen</a>
                 <ul id='dropdownBim' class='dropdown-content'>
                     <?php 
                         foreach($bimData AS $bimKey => $bimVal) {

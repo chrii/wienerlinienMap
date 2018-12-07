@@ -1,10 +1,10 @@
 "use strict"
 
 //var rootLink = 'https://chrispi.lima-city.de/';
-var rootLink = 'https://localhost/';
+var rootLink = 'http://localhost/wienerlinien/';
 
 // Button für Stationen
-function createButton(val, name) {
+function createButton(val, target) {
     $('#balken2').empty();
     $('<br>')
         .appendTo('#balken2:last-child');
@@ -12,7 +12,7 @@ function createButton(val, name) {
         .addClass('dropdown-trigger btn indigo darken-2')
         .appendTo('#balken2:last-child')
         .attr({'href':'#', 'data-target':'stationen'})
-        .html(name + ' Stationen');
+        .html('Linie ' + target + ' Stationen');
     $('<i>')
         .addClass("material-icons left")
         .html('room')
@@ -38,6 +38,7 @@ $(document).ready(function (){
 /**
  * TODO:
  * Location soll sich resetten wenn eine neue Location angegeben wurde
+ * Button für Streckenübersicht mit verbundenen Stationen
  */
     var myMap = L.map('map', {center:[48.142442551082,16.3999582372354], zoom:13});
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'}).addTo(myMap);
@@ -54,11 +55,12 @@ $(document).ready(function (){
                 var ubahndaten = reponse.lineData[0];
                 for (var key in ubahndaten) {
                     if (key == target) {
-                        createButton(ubahndaten[target].stationen, 'Ubahn'); 
+                        $('<h2>').html(target).appendTo('#balken2');
+                        createButton(ubahndaten[target].stationen, target); 
                         $('#stationen li').on('click', function() {
+
                             var numb = $(this).attr('id');
                             var rblUbahn = ubahndaten[target].stationen[numb][1][2];
-                            
                             myMap.setView([ubahndaten[target].stationen[numb][1][0], ubahndaten[target].stationen[numb][1][1]], 14);
                             var ubahnMarker = L.marker([ubahndaten[target].stationen[numb][1][0], ubahndaten[target].stationen[numb][1][1]]).addTo(myMap);
 
@@ -67,6 +69,7 @@ $(document).ready(function (){
                                 method: 'GET',
                                 data: {getLiveData:'rbl', rblNumber: rblUbahn },
                                 success: function(liveData) {
+
                                     var parsed = JSON.parse(liveData);
                                     console.log(parsed);
                                     var uContent = ubahndaten[target].stationen[numb][0] + '<br>Linie ' + parsed.response[0] + '<br>Endstation ' + parsed.response[2]+ '<br>Nächste Ubahn in ' + parsed.response[1] + ' Minuten';
@@ -75,7 +78,7 @@ $(document).ready(function (){
                                     
                                 },
                                 error: function (){
-                                    alert( 'nooo');
+                                    alert('nooo');
                                 }
                             });
                         }); 
@@ -93,17 +96,20 @@ $(document).ready(function (){
                 var bimDaten = reponse.lineData[0];
                 for (var key in bimDaten) {
                     if (key == target) {
-                        createButton(bimDaten[target].stationen, 'Straßenbahn'); 
+                        createButton(bimDaten[target].stationen, target); 
                         $('#stationen li').on('click', function() {
+
                             var numb = $(this).attr('id');
                             var rblBim = bimDaten[target].stationen[numb][1][2];
                             myMap.setView([bimDaten[target].stationen[numb][1][0], bimDaten[target].stationen[numb][1][1]], 14);
                             var bimMarker = L.marker([bimDaten[target].stationen[numb][1][0], bimDaten[target].stationen[numb][1][1]]).addTo(myMap);
+                            
                             $.ajax({
                                 url: rootLink + 'lib/EchtzeitDatenAPI.php',
                                 method: 'GET',
                                 data: {getLiveData:'rbl', rblNumber: rblBim },
                                 success: function(liveData) {
+                                    
                                     var parsed = JSON.parse(liveData);
                                     console.log(parsed);
                                     var tContent = bimDaten[target].stationen[numb][0] + '<br>Linie ' + parsed.response[0] + '<br>Endstation ' + parsed.response[2]+ '<br>Nächste Straßenbahn in ' + parsed.response[1] + ' Minuten';
@@ -131,7 +137,7 @@ $(document).ready(function (){
                 var busDaten = reponse.lineData[0];
                 for (var key in busDaten) {
                     if (key == target) {
-                        createButton(busDaten[target].stationen, 'Bus'); 
+                        createButton(busDaten[target].stationen, target); 
                         $('#stationen li').on('click', function() {
                             var numb = $(this).attr('id');
                             var rblBus = busDaten[target].stationen[numb][1][2];
@@ -160,6 +166,7 @@ $(document).ready(function (){
             }
         });
     });
+
 
 
 });
