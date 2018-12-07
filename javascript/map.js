@@ -43,11 +43,9 @@ function buttonShowAll (target) {
         .addClass('material-icons left')
         .appendTo('#balken2 a:last-child')
         .html('show_chart');
-
 };
 
 $(document).ready(function (){
-
 /**
  * TODO:
  * Location soll sich resetten wenn eine neue Location angegeben wurde
@@ -55,7 +53,12 @@ $(document).ready(function (){
  */
     var myMap = L.map('map', {center:[48.142442551082,16.3999582372354], zoom:13});
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'}).addTo(myMap);
-    
+    var customMarkerMetro = L.icon({
+        iconUrl: '../icons/sharp-directions_subway-24px.svg',
+        iconSize: [24, 24],
+        popUpAmchor: [0,0]
+    });
+
     $('.dropdown-trigger').dropdown({'hover': false, 'constrainWidth': false});
     
     $('#dropdownMetro li').on('click', function() {
@@ -74,14 +77,17 @@ $(document).ready(function (){
                         $('<h2>').html(target).appendTo('#balken2');
                         createButton(ubahndaten[target].stationen, target); 
                         buttonShowAll(target);    
-
+                        var allMarker = {};
                         $('#allButton').on('click', function () {
                             $.ajax({
                                 url: rootLink + 'lib/EchtzeitDatenAPI.php',
                                 method: 'GET',
                                 data: {getLiveData: 'getAll', type: 'ubahn'},
                                 success: function (response) {
-                                    
+                                    if (allMarker !== 'undefinded') {
+                                        myMap.removeLayer(allMarker);
+
+                                    }
                                     var line = response.lineData[0];
                                     var coord = [];
                                     for (let tar in line) {
@@ -92,7 +98,7 @@ $(document).ready(function (){
                                             for (let s = 0; s < stations.length; s++) {
                         
                                                 myMap.setView([stations[0][1][0],stations[0][1][1]], 12);
-                                                var allMarker = L.marker([stations[s][1][0],stations[s][1][1]]).addTo(myMap);
+                                                allMarker = L.marker([stations[s][1][0],stations[s][1][1]],{icon: customMarkerMetro}).addTo(myMap);
                                                 var stName = stations[s][0];
                                                 allMarker.bindPopup(stName);
                                                 var lonlat = new L.LatLng(stations[s][1][0], stations[s][1][1]);
@@ -119,7 +125,7 @@ $(document).ready(function (){
                             var numb = $(this).attr('id');
                             var rblUbahn = ubahndaten[target].stationen[numb][1][2];
                             myMap.setView([ubahndaten[target].stationen[numb][1][0], ubahndaten[target].stationen[numb][1][1]], 14);
-                            var ubahnMarker = L.marker([ubahndaten[target].stationen[numb][1][0], ubahndaten[target].stationen[numb][1][1]]).addTo(myMap);
+                            var ubahnMarker = L.marker([ubahndaten[target].stationen[numb][1][0], ubahndaten[target].stationen[numb][1][1]], {icon: customMarkerMetro}).addTo(myMap);
 
                             $.ajax({
                                 url: rootLink + 'lib/EchtzeitDatenAPI.php',
@@ -215,7 +221,7 @@ $(document).ready(function (){
                                     
                                 },
                                 error: function (){
-                                    alert( 'nooo');
+                                    alert('nooo');
                                 }
                             });
                         }); 
@@ -295,7 +301,7 @@ $(document).ready(function (){
                                     
                                 },
                                 error: function (){
-                                    alert( 'nooo');
+                                    alert('nooo');
                                 }
                             });
                         }); 
@@ -304,7 +310,6 @@ $(document).ready(function (){
             }
         });
     });
-
 
 
 
