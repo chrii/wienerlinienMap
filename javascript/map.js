@@ -33,6 +33,17 @@ function createButton(val, target) {
     $('.dropdown-trigger').dropdown({'hover': false, 'constrainWidth': false});
 };
 
+function buttonShowAll (target) {
+    $('<a>')
+        .addClass('waves-effect waves-light btn indigo darken-2')
+        .appendTo('#balken2:last-child')
+        .html('Zeige ' + target + ' Strecke');
+    $('<i>')
+        .addClass('material-icons left')
+        .appendTo('#balken2 a:last-child')
+        .html('show_chart');
+};
+
 $(document).ready(function (){
 
 /**
@@ -57,6 +68,7 @@ $(document).ready(function (){
                     if (key == target) {
                         $('<h2>').html(target).appendTo('#balken2');
                         createButton(ubahndaten[target].stationen, target); 
+                        buttonShowAll(target);
                         $('#stationen li').on('click', function() {
 
                             var numb = $(this).attr('id');
@@ -166,8 +178,6 @@ $(document).ready(function (){
             }
         });
     });
-
-
 
 });
 
