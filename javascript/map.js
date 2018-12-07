@@ -45,6 +45,15 @@ function buttonShowAll (target) {
         .html('show_chart');
 };
 
+function createIcon (path) {
+    var iconz = L.icon({
+        iconUrl: path,
+        iconSize: [24, 24],
+        popUpAnchor: [0,0]
+    });
+    return iconz;
+}
+
 $(document).ready(function (){
 /**
  * TODO:
@@ -53,11 +62,8 @@ $(document).ready(function (){
  */
     var myMap = L.map('map', {center:[48.142442551082,16.3999582372354], zoom:13});
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'}).addTo(myMap);
-    var customMarkerMetro = L.icon({
-        iconUrl: '../icons/sharp-directions_subway-24px.svg',
-        iconSize: [24, 24],
-        popUpAmchor: [0,0]
-    });
+
+    
 
     $('.dropdown-trigger').dropdown({'hover': false, 'constrainWidth': false});
     
@@ -98,7 +104,7 @@ $(document).ready(function (){
                                             for (let s = 0; s < stations.length; s++) {
                         
                                                 myMap.setView([stations[0][1][0],stations[0][1][1]], 12);
-                                                allMarker = L.marker([stations[s][1][0],stations[s][1][1]],{icon: customMarkerMetro}).addTo(myMap);
+                                                allMarker = L.marker([stations[s][1][0],stations[s][1][1]],{icon: createIcon('icons/sharp-subway.svg')}).addTo(myMap);
                                                 var stName = stations[s][0];
                                                 allMarker.bindPopup(stName);
                                                 var lonlat = new L.LatLng(stations[s][1][0], stations[s][1][1]);
@@ -125,7 +131,7 @@ $(document).ready(function (){
                             var numb = $(this).attr('id');
                             var rblUbahn = ubahndaten[target].stationen[numb][1][2];
                             myMap.setView([ubahndaten[target].stationen[numb][1][0], ubahndaten[target].stationen[numb][1][1]], 14);
-                            var ubahnMarker = L.marker([ubahndaten[target].stationen[numb][1][0], ubahndaten[target].stationen[numb][1][1]], {icon: customMarkerMetro}).addTo(myMap);
+                            var ubahnMarker = L.marker([ubahndaten[target].stationen[numb][1][0], ubahndaten[target].stationen[numb][1][1]], {icon: createIcon('icons/sharp-subway.svg')}).addTo(myMap);
 
                             $.ajax({
                                 url: rootLink + 'lib/EchtzeitDatenAPI.php',
@@ -179,7 +185,7 @@ $(document).ready(function (){
                                             for (let s = 0; s < stations.length; s++) {
                         
                                                 myMap.setView([stations[0][1][0],stations[0][1][1]], 12);
-                                                var allMarker = L.marker([stations[s][1][0],stations[s][1][1]]).addTo(myMap);
+                                                var allMarker = L.marker([stations[s][1][0],stations[s][1][1]], {icon: createIcon('icons/sharp-railway.svg')}).addTo(myMap);
                                                 var stName = stations[s][0];
                                                 allMarker.bindPopup(stName);
                                                 var lonlat = new L.LatLng(stations[s][1][0], stations[s][1][1]);
@@ -205,7 +211,7 @@ $(document).ready(function (){
                             var numb = $(this).attr('id');
                             var rblBim = bimDaten[target].stationen[numb][1][2];
                             myMap.setView([bimDaten[target].stationen[numb][1][0], bimDaten[target].stationen[numb][1][1]], 14);
-                            var bimMarker = L.marker([bimDaten[target].stationen[numb][1][0], bimDaten[target].stationen[numb][1][1]]).addTo(myMap);
+                            var bimMarker = L.marker([bimDaten[target].stationen[numb][1][0], bimDaten[target].stationen[numb][1][1]], {icon: createIcon('icons/sharp-railway.svg')}).addTo(myMap);
                             
                             $.ajax({
                                 url: rootLink + 'lib/EchtzeitDatenAPI.php',
@@ -260,7 +266,7 @@ $(document).ready(function (){
                                             for (let s = 0; s < stations.length; s++) {
                         
                                                 myMap.setView([stations[0][1][0],stations[0][1][1]], 12);
-                                                var allMarker = L.marker([stations[s][1][0],stations[s][1][1]]).addTo(myMap);
+                                                var allMarker = L.marker([stations[s][1][0],stations[s][1][1]], {icon: createIcon('icons/sharp-bus.svg')}).addTo(myMap);
                                                 var stName = stations[s][0];
                                                 allMarker.bindPopup(stName);
                                                 var lonlat = new L.LatLng(stations[s][1][0], stations[s][1][1]);
@@ -287,7 +293,7 @@ $(document).ready(function (){
                             var rblBus = busDaten[target].stationen[numb][1][2];
                             console.log(rblBus);
                             myMap.setView([busDaten[target].stationen[numb][1][0], busDaten[target].stationen[numb][1][1]], 14);
-                            var busMarker = L.marker([busDaten[target].stationen[numb][1][0], busDaten[target].stationen[numb][1][1]]).addTo(myMap);
+                            var busMarker = L.marker([busDaten[target].stationen[numb][1][0], busDaten[target].stationen[numb][1][1]],{icon: createIcon('icons/sharp-bus.svg')}).addTo(myMap);
                             $.ajax({
                                 url: rootLink + 'lib/EchtzeitDatenAPI.php',
                                 method: 'GET',
